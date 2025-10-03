@@ -1,6 +1,7 @@
 import axios from "axios";
 import admin from "firebase-admin";
 
+// Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   admin.initializeApp();
 }
@@ -15,12 +16,12 @@ export default async function handler(req, res) {
 
     const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
       redirectUri
-    )}&scope=r_liteprofile%20r_emailaddress`;
+    )}&scope=profile%20email`;
 
     return res.redirect(url);
   }
 
-  // Step 2: If LinkedIn callback gives "code"
+  // Step 2: LinkedIn callback with "code"
   try {
     const tokenRes = await axios.post(
       "https://www.linkedin.com/oauth/v2/accessToken",
@@ -38,11 +39,12 @@ export default async function handler(req, res) {
 
     const accessToken = tokenRes.data.access_token;
 
-    // Fetch user profile + email
+    // Fetch user profile
     const profileRes = await axios.get("https://api.linkedin.com/v2/me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
+    // Fetch user email
     const emailRes = await axios.get(
       "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
       { headers: { Authorization: `Bearer ${accessToken}` } }
@@ -51,7 +53,7 @@ export default async function handler(req, res) {
     const linkedInId = profileRes.data.id;
     const email = emailRes.data.elements[0]["handle~"].emailAddress;
 
-    // Create Firebase token
+    // Create Firebase custom token
     const firebaseToken = await admin.auth().createCustomToken(linkedInId, {
       email,
     });
