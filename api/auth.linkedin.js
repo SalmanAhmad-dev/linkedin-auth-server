@@ -14,9 +14,10 @@ export default async function handler(req, res) {
     const redirectUri = process.env.REDIRECT_URI;
     const clientId = process.env.LINKEDIN_CLIENT_ID;
 
-    const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&scope=profile%20email`;
+   const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
+  redirectUri
+)}&scope=openid%20profile%20email`;
+
 
     return res.redirect(url);
   }
@@ -71,4 +72,5 @@ export default async function handler(req, res) {
 }
 
 }
+
 
