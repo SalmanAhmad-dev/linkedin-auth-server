@@ -1,6 +1,7 @@
 {
   "name": "linkedin-auth",
   "version": "1.0.0",
+  "type": "module",
   "main": "api/auth.linkedin.js",
   "scripts": {
     "start": "node api/auth.linkedin.js"
