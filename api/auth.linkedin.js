@@ -66,7 +66,9 @@ export default async function handler(req, res) {
       </script>
     `);
   } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).send("Error logging in with LinkedIn");
-  }
+  console.error("LinkedIn OAuth error:", err.response?.data || err.message);
+  res.status(500).send("Error logging in with LinkedIn: " + (err.response?.data?.error_description || err.message));
 }
+
+}
+
